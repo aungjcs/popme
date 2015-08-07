@@ -1,0 +1,81 @@
+/* client
+-------------------------------------------------- */
+.mailListContainer {
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    /*float: left;*/
+}
+
+.mailList {
+    display: inline-block;
+    margin-left: 5px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.mailList li {
+    cursor: default;
+    white-space: nowrap;
+}
+
+.mailList li:hover {
+    background-color: #f6f6f6;
+}
+
+.mailList li.selected {
+    background-color: #44BBB5;
+    color: #f9f9f9;
+}
+
+.mailList li>div {
+    margin-bottom: 2px;
+}
+
+.mailList li .dropdown-toggle {
+    cursor: pointer;
+}
+
+.mailList li .itemLabel {
+    display: inline-block;
+    font-size: 11px;
+    width: 40px;
+}
+
+.mailList li .mailFrom {
+    font-weight: bold;
+}
+
+.mailList li .mailAddress {
+    font-size: 15px;
+}
+
+.mailList li .mailTo {
+    font-size: 12px;
+    margin-right: 2px;
+}
+
+.mailList li .mailCC {
+    font-size: 12px;
+    margin-right: 2px;
+}
+
+.mailList li .receivdDate {
+    font-weight: bold;
+}
+
+.mailList .mailSubject {
+    display: inline-block;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 99%;
+}
+
+.mailContentContainer {
+    background-color: #f5f5f5;
+    display: none;
+    float: right;
+    overflow: hidden;
+}

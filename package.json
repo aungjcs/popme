@@ -1,0 +1,16 @@
+{
+  "name": "popme",
+  "version": "0.0.1",
+  "description": "Simple mail viewer",
+  "main": "index.html",
+  "scripts": {
+    "start": "nw",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aung",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    
+  }
+}

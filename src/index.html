@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja" ng-app="nwjsApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POPme!</title>
+    <link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="css/base.css"> -->
+    <link rel="stylesheet" href="css/client.css">
+    <script src="lib/js/jquery.min.js"></script>
+    <script src="lib/js/bootstrap.min.js"></script>
+    <script src="lib/js/angular.min.js"></script>
+    <script src="lib/js/angular-route.min.js"></script>
+    <script src="lib/js/angular-messages.min.js"></script>
+    <script src="config.js"></script>
+    <script src="client.js"></script>
+</head>
+<body>
+    <nav id="MainNavController" class="navbar navbar-inverse" ng-controller="MainNavController">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" ng-href="">
+                    <span class="glyphicon glyphicon-envelope"></span> POPme
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" ng-click="refetch()">
+                        <span class="glyphicon glyphicon-save"></span> Refetch
+                    </a></li>
+                    <li><a href="#" ng-click="openDevtool()">
+                        <span class="glyphicon glyphicon-console"></span> Devtool
+                    </a></li>
+                    <li><a href="#" ng-click="reloadApp()">
+                          <span class="glyphicon glyphicon-refresh"></span> Reload
+                    </a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria- expanded="false">
+                            <span class="glyphicon glyphicon-user"></span> Account<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" ng-click="openSetup()">
+                                <span class="glyphicon glyphicon-cog text-primary"></span> 設定
+                            </a></li>
+                            <li><a href="#" ng-click="clearAccount()">
+                                <span class="glyphicon glyphicon-remove-circle text-danger"></span> アカウントを削除
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <a class="navbar-brand navbar-right" href="#" ng-show="loading">
+                    <div class="progress navbar-right" style="height: 18px;width: 100px;">
+                        <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                            aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%">
+                        </div>
+                    </div>
+                </a>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+        <div ng-include="'./setting.html'"></div>
+    </nav>
+    <script>p = require('./pop.js')</script>
+    <div ng-controller="MailController" id="MailController">
+        <div class="mailListContainer">
+            <div>
+                <label>総件数：{{mailCount()}}</label>
+            </div>
+            <ul class="list-group mailList" style="display:inline-block;">
+                <li class="list-group-item" ng-repeat="item in mails | mailFilter | orderBy:'-ts'"
+                    ng-click="selected($event, item)" ng-class="item.selectedClass">
+                    <div>
+                        <span class="receivdDate">
+                            {{item.date | date:'yyyy/MM/dd HH:mm:ss'}}
+                        </span>
+                        <span class="pull-right dropdown mailAction" ng-click="openMailAction($event)">
+                            <span class="glyphicon glyphicon-menu-hamburger dropdown-toggle" data-toggle="dropdown"></span>
+                            <ul class="dropdown-menu">
+                                <li><a ng-click="deleteMail($event, item)">
+                                    <span class="glyphicon glyphicon-remove-circle text-danger"></span> 削除
+                                </a></li>
+                                <li><a ng-click="deleteMailFromServer($event, item)" style="font-weight:bold">
+                                    <span class="glyphicon glyphicon-remove-circle text-danger"></span> サーバーから削除
+                                </a></li>
+                            </ul>
+                        </span>
+                    </div>
+                    <div>
+                        <span class="mailSubject">
+                            {{item.subject}}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="itemLabel">From:</span>
+                        <span class="mailAddress mailFrom label label-primary" title="{{item.from[0].address}}">
+                            {{item.from[0].name || (item.from[0].address | parseNameFromAddress)}}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="itemLabel">To:</span>
+                        <span class="mailTo mailAddress label label-primary" ng-repeat="add in item.to" 
+                            title="{{add.address}}">
+                            {{add.name || (add.address | parseNameFromAddress)}}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="itemLabel" ng-show="item.cc.length">CC:</span>
+                        <span class="mailCC mailAddress label label-primary" ng-repeat="add in item.cc" 
+                            title="{{add.address}}">
+                            {{add.name || (add.address | parseNameFromAddress)}}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="itemLabel" ng-show="item.files.length">Files:</span>
+                        <span class="mailFiles label label-warning" ng-repeat="file in item.files"
+                            title="{{file.length | number:0}} Bytes">
+                            {{file.fileName}}
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 一覧の詳細の横並び構成用 -->
+        <div style="display: table-row;">
+            <div class="mailContentContainer" ng-controller="MailContentController">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

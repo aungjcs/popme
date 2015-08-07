@@ -1,0 +1,4 @@
+*.sublime*
+*.log
+node_modules
+public/dist

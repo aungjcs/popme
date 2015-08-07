@@ -1,0 +1,31 @@
+{
+  "name": "popme",
+  "version": "0.0.1",
+  "description": "Simple mail viewer",
+  "main": "index.html",
+  "scripts": {
+    "start": "nw",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "iconvBuild": "cd node_modules\\iconv && nw-gyp configure --target=0.12.3&& nw-gyp build",
+    "winBuild": "cd .. && build.bat"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^1.4.0",
+    "bluebird": "^2.9.34",
+    "gaze": "^0.5.1",
+    "iconv": "^2.1.9",
+    "mailparser": "^0.5.2",
+    "moment": "^2.10.6",
+    "poplib": "^0.1.7",
+    "underscore": "^1.8.3",
+    "underscore-db": "^0.9.0"
+  },
+  "window": {
+    "height": 780,
+    "toolbar": true,
+    "width": 800
+  },
+  "devDependencies": {}
+}
