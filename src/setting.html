@@ -1,0 +1,69 @@
+<div class="modal fade" id="settingModal" tabindex="-1" role="dialog" ng-controller="SettingDialogController">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">設定</h4>
+            </div>
+            <ng-form name="loginSetts">
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">User id</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="settingUserId" placeholder="User id" name="userId"
+                                    ng-model="setts.userId" ng-pattern="/^[a-zA-Z0-9_]+$/" required>
+                                    <div ng-messages="loginSetts.userId.$error" style="color:maroon" role="alert">
+                                        <div ng-message="required">必須</div>
+                                        <div ng-message="pattern">英数字のみ可能</div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="settingPass" placeholder="Password"
+                                    name="pass" ng-model="setts.pass" required>
+                                <div ng-messages="loginSetts.pass.$error" style="color:maroon" role="alert">
+                                    <div ng-message="required">必須</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Host</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="settingHostAdd" placeholder="Host"
+                                    name="host" ng-model="setts.host" required>
+                                <div ng-messages="loginSetts.host.$error" style="color:maroon" role="alert">
+                                    <div ng-message="required">必須</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Check interval</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" id="settingCheckInterval" name="interval"
+                                    placeholder="Check interval" ng-model="setts.interval" ng-minlength="1" min="1" required>
+                                <div ng-messages="loginSetts.interval.$error" style="color:maroon" role="alert">
+                                    <div ng-message="required">必須</div>
+                                    <div ng-message="number">数字のみ</div>
+                                    <div ng-message="min">1以上</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </ng-form>
+            <div class="modal-footer">
+                <span style="color:maroon" ng-show="loginFailed">接続テストが失敗しました。</span>
+                <span style="color:maroon" ng-show="loginTesting">接続テスト中...</span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save" ng-click="saveSetting()"
+                    ng-disabled="loginSetts.$invalid || loginTesting">Save</button>
+            </div>
+        </div>
+    </div>
+</div>  
