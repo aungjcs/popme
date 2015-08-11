@@ -1,5 +1,6 @@
 *.sublime*
 *.log
 build
+cache
 node_modules
 public/dist

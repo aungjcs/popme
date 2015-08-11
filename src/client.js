@@ -3,7 +3,7 @@
     var app = ng.module('nwjsApp', ['ngRoute', 'ngMessages']);
     var moment = require('moment');
     var _ = require('underscore');
-    var path = require('path')
+    var path = require('path');
     var pop = require('./pop.js');
     var storage = require('./storage.js');
     var gui = require('nw.gui');
@@ -27,6 +27,13 @@
         ng.element('#MainNavController').scope().start();
 
         console.log('doc ready');
+
+        win.on('restore', function () {
+            console.log('restore');
+        });
+        win.on('loaded', function () {
+            console.log('loaded');
+        });
     });
 
     pop.removeAllListeners(['retr-start', 'retr-finished', 'retr-prepare', 'retr-success']);
@@ -156,73 +163,99 @@
         }
     });
 
-    app.factory('MailFetchService', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+    app.factory('NotificationService', ['$rootScope', function($rootScope) {
 
-        var scope = $rootScope.$new();
-        var timer;
-
-        function listen() {
-            var interval = storage.load().login.interval || 100;
-
-            if(timer) {
-                clearTimeout(timer);
-            }
-
-            timer = setTimeout(function () {
-
-                timer = null;
-
-                haveNewMails().then(function (result) {
-
-                    if(result) {
-
-                        var notification = new Notification("New mail", {
-                            icon: 'img/mail.png',
-                            body: 'New mail reached.'
-                        });
-
-                        notification.onclick = function () {
-                            win.show();
-                        }
-
-                        $rootScope.$broadcast('fetchMail');
-                    }
-
-                    listen();
-                    
-                });
-
-            }, interval * 1000);
-        }
-
-        function haveNewMails() {
-
-            var mails = storage.load().mails;
-            var reads;
-
-            loadedUidls = _.pluck(mails, 'uidl');
-
-            return pop.readUidls().then(function(serverUidls) {
-
-                reads = _.filter(serverUidls.data, function(v) {
-
-                    return v && !_.contains(loadedUidls, v);
-                });
-
-                return reads.length >= 1 ? true : false;
-
-            });
-        }
+        var subClosed = true;
+        var sub = null;
 
         return {
-            listen: listen,
-            $scope: scope
+            notify: function() {
+
+                if (sub !== null) {
+                    return;
+                }
+
+                sub = gui.Window.open('sub.html', {
+                    width: 200,
+                    height: 100,
+                    toolbar: false,
+                    frame: false,
+                    'always-on-top': true
+                });
+
+                sub.on('close', function() {
+                    console.log('sub closed');
+                    this.close(true);
+                    sub = null;
+                });
+            }
         };
     }]);
 
-    app.controller('AttrController', ['$scope', function($scope) {
-        this.name = 'AttrController';
-    }])
+    app.factory('MailFetchService', ['$rootScope', '$timeout', 'NotificationService',
+        function($rootScope, $timeout, NotificationService) {
+
+            var scope = $rootScope.$new();
+            var timer;
+
+            function listen() {
+                var interval = storage.load().login.interval || 1;
+
+                if (timer) {
+                    clearTimeout(timer);
+                }
+
+                timer = setTimeout(function() {
+
+                    timer = null;
+
+                    haveNewMails().then(function(result) {
+
+                        if (result) {
+
+                            NotificationService.notify();
+
+                            $rootScope.$broadcast('fetchMail');
+                        }
+
+                        listen();
+
+                    });
+
+                }, interval * 60 * 1000);
+            }
+
+            function haveNewMails() {
+
+                var mails = storage.load().mails;
+                var reads;
+
+                loadedUidls = _.pluck(mails, 'uidl');
+
+                return pop.readUidls().then(function(serverUidls) {
+
+                    reads = _.filter(serverUidls.data, function(v) {
+
+                        return v && !_.contains(loadedUidls, v);
+                    });
+
+                    return reads.length >= 1 ? true : false;
+
+                });
+            }
+
+            return {
+                listen: listen,
+                $scope: scope
+            };
+        }
+    ]);
+
+    app.controller('AttrController', ['$scope',
+        function($scope) {
+            this.name = 'AttrController';
+        }
+    ])
 
     app.controller('MainNavController', function($rootScope, $scope, $element, $timeout, DialogService, MailFetchService) {
 
@@ -273,6 +306,9 @@
             MailFetchService.listen();
 
         });
+
+        $scope.brandClick = function () {
+        }
 
         $scope.start = function() {
 
@@ -436,14 +472,14 @@
         $scope.$on('accountCleared', function($event) {
             console.log('on accountCleared');
 
-            $timeout(function () {
+            $timeout(function() {
                 $scope.mails.length = 0;
             });
         });
 
         $scope.fetchMail = function() {
 
-            if($scope.featching) {
+            if ($scope.featching) {
                 console.log('featching');
                 return;
             }
@@ -477,7 +513,7 @@
 
                     storage.save();
 
-                    $timeout(function () {
+                    $timeout(function() {
                         $scope.mails.length = 0;
                         $scope.mails = storage.clone(db.mails);
                         $scope.featching = false;
@@ -510,8 +546,8 @@
 
         }
 
-        $scope.mailCount = function () {
-            return _.filter($scope.mails, function (v) {
+        $scope.mailCount = function() {
+            return _.filter($scope.mails, function(v) {
                 return !v.deleted;
             }).length;
         }
@@ -532,10 +568,10 @@
 
         $scope.deleteMailFromServer = function($event, item) {
 
-            pop.delete(item.uidl).then(function () {
+            pop.delete(item.uidl).then(function() {
                 console.log('delete success');
                 return 'delete ok'
-            }).catch(function () {
+            }).catch(function() {
 
                 console.log('error', arguments);
 

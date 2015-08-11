@@ -1,6 +1,6 @@
 {
   "name": "popme",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Simple mail viewer",
   "main": "index.html",
   "scripts": {
@@ -24,7 +24,8 @@
   },
   "window": {
     "height": 780,
-    "toolbar": true,
+    "frame": true,
+    "toolbar": false,
     "width": 800
   },
   "devDependencies": {}

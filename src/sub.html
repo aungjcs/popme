@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja" ng-app="nwjsApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notification!</title>
+    <link href="lib/css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #main {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            border: 5px groove #B0E6FF;
+        }
+    </style>
+    <script src="lib/js/jquery.min.js"></script>
+    <script src="lib/js/bootstrap.min.js"></script>
+    <script>
+
+        var gui = require('nw.gui');
+        var win = gui.Window.get();
+
+        (function () {
+
+            win.moveTo(win.window.screen.availWidth - (win.width + 20), win.window.screen.availHeight - (win.height+20)); 
+
+
+            $(function () {
+
+                $('body').height($(window).height());
+
+                $('#btnClose').click(function  () {
+
+                    win.close();
+
+                });
+
+            });
+
+        })(jQuery);
+
+    </script>
+</head>
+<body>
+    <div id="main" class="well well-sm">
+        <div style="position:relative;">
+
+        </div>
+        <div class="well" style="margin-top:5px;">
+            New mail
+            <button id="btnClose" type="button" class="close btn-sm">&times;</button>
+        </div>
+    </div>
+</body>
+</html>
